@@ -60,7 +60,10 @@ FROM emp;
 
 데이터 타입
 DESC 테이블명(테이블 구조를 확인)
-DESC emp;
+DESC emp;  desc로 칼럼이 있는지 없는지 확인할수있음 -> 칼럼의 이름들을 볼수있고 그 칼럼의 데이터가 무엇으로 이루어져 있는지도 알수있음
+
+SELECT *
+FROM emp;
 
 숫자 + 숫자 = 숫자값
 5 + 6 = 11
@@ -207,6 +210,8 @@ sql 은 문자열끼리 더하기가 가능해!
 
 USER_TABLES : 오라클에서 관리하는 테이블(뷰)
               접속한 사용자가 보유하고 있는 테이블 정보를 관리
+  
+실습 3 
                   
 SELECT CONCAT(CONCAT(CONCAT('SELECT * FROM',' ' ), table_name), ';') AS QUERY
 FROM user_tables;
@@ -214,4 +219,13 @@ FROM user_tables;
 SELECT 'SELECT * FROM' || ' ' || table_name || ';'  AS QUERY
 FROM user_tables;
  
+ 
+SELECT 'test' - 이것도 맞아 그냥 expression 이고. 출력하면 행렬이 하나 추가되서 나옴.
+FROM emp;
+ 
+ 
+ 
+ 
+        
+        
  
