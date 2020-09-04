@@ -172,7 +172,7 @@ FROM users
 WHERE userid IN ('brown', 'cony', 'sally');  -> userid IN (brown, cony, sally) - 이렇게 하면 brown이라는 칼럼을 찾는거야
 
 OR를 사용하면,
-SELECT userid AS 아이디, usernm AS 이름, alias AS 별명
+SELECT userid AS "아이디", usernm AS 이름, alias AS 별명
 FROM users
 WHERE userid = 'brown'
    OR userid = 'cony'
