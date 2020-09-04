@@ -183,24 +183,27 @@ WHERE job = 'SALESMAN' OR hiredate >= TO_DATE('19810601', 'yyyymmdd');
 SELECT *
 FROM emp
 WHERE job = 'SALESMAN' 
-   OR empno LIKE '78%';  
+   OR empno LIKE '78%';  %랑 _를 쓰려면 무조건 like가 있어야함. 
 
 문제13
 SELECT *
 FROM emp
 WHERE job = 'SALESMAN' 
-   OR empno = '78%';
+   OR (empno >= 7800  AND empno <=7899);
+   
+   ; like를 안쓰고 하려면 숫자는 4자리이고. empno는 0~ 9999까지만 있음. 그걸 잘 생각해봐
 
 문제14
 SELECT *
 FROM emp
-WHERE
+WHERE job = 'SALESMAN'
+    OR empno Like '78%' AND hiredate >= TO_DATE('19810601', 'yyyymmdd');
 
 
 정렬
 *********매우 매우 중요 ************* where가 제일중요! 이건 그다음??중요?
 
-RDBMS는 집합에서 많은 부분을 차용
+RDBMS는 집합에서 많은 부분을 차용 (relational database management system = RDBMS =비슷 DBMS)
 집합의 특징 : 1. 순서가 없다.
              2. 중복을 허용하지 않는다.
 {1, 5, 10} == {5, 1, 10} (집합에 순서는 없다)             
@@ -287,7 +290,13 @@ ORDER BY job, empno DESC;
 문제4  
 SELECT *
 FROM emp
-WHERE deptno = 10 OR deptno = 30 AND sal > 1500  ????????????????????????????????????????????
+WHERE deptno = 10 OR (deptno = 30 AND sal > 1500 )    
+ORDER BY ename DESC;
+이걸 출력했을때 sal이 1300이어도 검색이 된건, and가 먼저 검색이 되고 앞에 OR 해서 넘버가 10인게 만족이 되서 검색이 된것
+
+SELECT *
+FROM emp
+WHERE (deptno = 10 OR deptno = 30) AND sal > 1500 
 ORDER BY ename DESC;
 
 SELECT *
@@ -300,7 +309,26 @@ ORDER BY ename DESC;
 ROWNUM : 행위 번호를 부여해주는 가상 컬럼 - 어렵게 느껴질수 있지만 실무에서 안쓸수가 없음
          ** 조회된 순서대로 번호를 부여
 
- ROWNUM은 1번부터 순차적으로 데이터를 읽어 올 때만 사용 가능 - 절대 조건!!!!!!!!!!!!!!!!!
+//추가 
+ROWNUM은 SELECT절에 의해 추출되는 데이터에 붙는 순번이다.
+다시 말해 WHERE절까지 만족 시킨 자료에 1부터 붙는 순번이다.
+WHERE절에 ROWNUM을 이용하여 조건을 주면 다른 조건을
+만족시킨 결과에 대해 조건이 반영된다.
+
+SELECT 리스트에 ROWNUM을 이용하는 것도 가능하다.
+
+ORDER BY를 사용한다면 WHERE절까지 만족 시킨 결과에 ROWNUM이
+붙은 상태로 ORDER BY가 반영된다.
+즉, ROWNUM은 ORDER BY전에 부여되며, ORDER BY는 맨 나중에 실행된다.
+//
+
+
+!!!! ROWNUM은 1번부터 순차적으로 데이터를 읽어 올 때만 사용 가능 - 절대 조건!!!!!!!!!!!!!!!!!
+위말을 쉽게 풀면ㄱ
+ㄴROWNUM은 SELECT절에서 선택받아서 추출되는 데이터에 붙는 순번이야.
+SELECT절에서 ename했으면 그 이름들이 쫙 데이터로 나오잖아 거기에 제일먼저 나온애한테 1번이라고 붙여주는거야
+그러니깐 2번부터 선택할수는 없는거지. 
+
 1. WHERE 절에 사용하는 것이 가능         
     * WHERE ROWNUM = 1 ( = 동등 비교 연산의 경우 1만 가능)
       WHERE ROWNUM <= 15
@@ -313,13 +341,18 @@ WHERE ROWNUM BETWEEN 1 AND 15 ;
 
 SELECT ROWNUM, empno, ename
 FROM emp
+WHERE ROWNUM BETWEEN 1 AND 15 
+ORDER BY empno;
+
+SELECT ROWNUM, empno, ename
+FROM emp
 WHERE 글번호 BETWEEN 46 AND 60;
 
 2. ORDER BY 절은 SELECT 이후에 실행된다.
     ** SELECT절에 ROWNUM을 사용하고 ORDER BY절을 사용하면 원하는 결과를 얻지 못한다.
 
 정렬을 먼저 하고 정렬된 결과에 ROWNUM을 적용
-==> INLIVE-VIEW
+==> INLINE-VIEW - 이게 괄호쳐서 먼저 실행되게 만든거
     SELECT 결과를 하나의 테이블처럼 만들어준다. 
 
 사원정보를 페이징 정리
@@ -345,11 +378,13 @@ FROM (SELECT ROWNUM rn, a.*
         (SELECT empno, ename
          FROM emp
          ORDER BY ename) a)
-WHERE rn BETWEEN (:page - 1) * :pageSize + 1 AND :page* :pageSize; 
+WHERE rn BETWEEN (:page - 1) * :pageSize + 1 AND :page * :pageSize; 
+
+
 
 
 SELECT절에 *사용했는데 ,를 통해 다른 특수 컬럼이나 EXPRESSION을 사용 할 경우는 
-*앞에 해당 데이터가 어떤 테이블에서 왔는지 명시를 해줘야 한다. (한정자)
+.*앞에 해당 데이터가 어떤 테이블에서 왔는지 명시를 해줘야 한다. (한정자)
 SELECT ROWNUM, *
 FROM emp;
 
