@@ -189,7 +189,17 @@ WHERE job = 'SALESMAN'
 SELECT *
 FROM emp
 WHERE job = 'SALESMAN' 
-   OR (empno >= 7800  AND empno <=7899);
+   OR (empno >= 78  AND empno <=78
+   OR empno >= 780  AND empno <=789
+   OR empno >= 7800  AND empno <=7899);
+   
+SELECT *
+FROM emp
+WHERE job = 'SALESMAN' 
+   OR (BETWEEN 78 AND 78
+   OR BETWEEN 780  AND 789
+   OR BETWEEN 7800  AND 7899);   
+   
    
    ; like를 안쓰고 하려면 숫자는 4자리이고. empno는 0~ 9999까지만 있음. 그걸 잘 생각해봐
 
@@ -309,6 +319,14 @@ ORDER BY ename DESC;
 ROWNUM : 행위 번호를 부여해주는 가상 컬럼 - 어렵게 느껴질수 있지만 실무에서 안쓸수가 없음
          ** 조회된 순서대로 번호를 부여
 
+
+ROWNUM : 1부터 읽어야한다.
+	   SELECT 절이 ORDER BY 절보다 먼저 실행된다.
+	   ==> ROWNUM을 이용하여 순서를 부여하려면 정렬부터 해야한다.
+		==> 인라인뷰 (ORDER BY - ROWNUM을 분리)
+
+
+
 //추가 
 ROWNUM은 SELECT절에 의해 추출되는 데이터에 붙는 순번이다.
 다시 말해 WHERE절까지 만족 시킨 자료에 1부터 붙는 순번이다.
@@ -362,6 +380,9 @@ WHERE 글번호 BETWEEN 46 AND 60;
 3페이지 : 11~15
 
 page = 1, pageSize = 5
+
+
+()<-inline view라고 하지!
 
 SELECT *
 FROM (SELECT ROWNUM rn, a.*
