@@ -253,7 +253,7 @@ SELECT SYSDATE, SYSDATE + 5, SYSDATE -5,
 FROM dual;
 
 문제 fn_1
-sql : 'Hello, World', 5
+sql : 'Hello, World', 5 -- 문자열쓰는방법, 숫자 쓰는 방법
 java : "Hello, World", 5
 
 날짜를 어떻게 표현할까?
