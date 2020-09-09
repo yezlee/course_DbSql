@@ -35,7 +35,7 @@ FROM emp;
 2020년 9월 8일 14시 10분 5초 ==> '20200908' ==> 2020년 9월 8일 00시 0분 0초
                        TO_DATE(TO_CHAR(SYSDATE, 'YYYYMMDD'), 'YYYYMMDD')
 
-WHERE 접수일자 BETWEEN SYSDATE AND SYSDATE + 5
+WHERE 접수일자(칼럼) BETWEEN SYSDATE AND SYSDATE + 5
 SYSDATE : 2020년 9월 8일 14시 16분 20초 
 
 접수일자가 2020년 9월 8일 14시 16분 20초 보다 크거나 같고 2020년 9월 13일 14시 16분 20초 작거나 같은 데이터만 조회
