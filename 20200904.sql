@@ -50,9 +50,10 @@ SELECT *
 FROM emp
 WHERE comm = NULL;   -이렇게 하면 안됨
 
+문제6
 SELECT *
 FROM emp
-WHERE comm IS NOT NULL;  - commsion이 null인걸 찾으려면
+WHERE comm IS NOT NULL;  - commission이 null이 아닌걸 찾으려면 즉, commission이 있는걸 찾을때
 
 comm 컬럼의 값이 NULL이 아닌걸 찾을때
  = , !=, <> 
@@ -385,13 +386,28 @@ page = 1, pageSize = 5
 ()<-inline view라고 하지!
 
 SELECT *
-FROM (SELECT ROWNUM rn, a.*
+FROM (SELECT ROWNUM rn, a.*   --rn이 컬럼이 된것. 그래서 6번부터 10번까지 where절로 조회가 가능 
       FROM
         (SELECT empno, ename
          FROM emp
          ORDER BY ename) a)
-WHERE rn BETWEEN 6 AND 10; 
-    
+WHERE rn BETWEEN 6 AND 10;
+
+
+-----------------------    
+셀렉트보다 오더바이가 먼저 실행되기 때문에 로우넘이랑 오더바이랑 같이 못써
+그래서 이 난리가 괄호치고 난리가 나는거
+SELECT ROWNUM , a.*
+FROM    (SELECT empno, ename
+         FROM emp
+         ORDER BY ename) a
+WHERE ROWNUM BETWEEN 1 AND 10;   
+-- 이건 가능해. 그냥 로우넘을 1번부터 검색한거니까. 
+-- 6번부터 검색하려면 로우넘을 컬럼으로 만들어서 검색해야하고 그게 아니면 꼭 로우넘을 컬럼으로 만들 필요가 없지.
+-- 여기서 rownum 별칭 줘서 where에서 바로 검색 못해!!!! 왜냐면 순서가 FROM -> WHERE -> SELECT라서,
+-- select에서 rn이라고 별칭을 줘도 where에서 먼저 검색할때 rn이 뭔지 몰라
+------------------------
+
 
 SELECT *
 FROM (SELECT ROWNUM rn, a.*
@@ -419,7 +435,7 @@ SELECT ROWNUM, e.*
 FROM emp e;
 
 
-셀렉트보다 오더바이가 먼저 실행되기떄무에 로우넘이랑 오더바이랑 같이 못써
+셀렉트보다 오더바이가 먼저 실행되기 때문에 로우넘이랑 오더바이랑 같이 못써
 그래서 이 난리가 괄호치고 난리가 나는거
 
 orderby4 실행순서
