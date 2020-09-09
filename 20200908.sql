@@ -83,6 +83,7 @@ SELECT MONTHS_BETWEEN( TO_DATE('20200915','YYYYMMDD') , TO_DATE('20200808','YYYY
 FROM dual;
 
 
+문제
 --SYSDATE를 검색하면 저절로  TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24-MI-SS')이렇게 나오는거야 NSL에 의해서
 --SYSDATE가 속한 월의 첫 날짜 구하기
 --(2020년 9월 8일 ==> 2020년 9월 1일의 날짜 타입으로 어떻게든 구하기. 형변환사용)
@@ -246,15 +247,16 @@ SELECT ename, sal, comm, sal+comm
 FROM emp;
     
 NULL과 관련된 함수
-1. NVN(컬럼 || 익스프레션, 컬럼 || 익스프레션)
-   NVN(expr1, expr2)
+1. NVL(컬럼 || 익스프레션, 컬럼 || 익스프레션)
+   NVL(expr1, expr2)
    
    if( expr1 == null)
     System.out.println(expr2);
    else
     System.out.println(expr1);
    
-   --첫번째 인자에 null이 있으면 0이 나오고 두번째 인자에 null 이 있음 comm이 나와라 그게 NVL함수임.    
+   --첫번째 인자에 null이 있으면 0이 나오고 두번째 인자에 null 이 있음 comm이 나와라 그게 NVL함수임.
+   
 SELECT empno, sal, comm, sal+comm, NVL(comm, 0), sal + NVL(comm, 0)
 FROM emp;
     
