@@ -155,7 +155,7 @@ sql : SELECT empno, 10
 문자 Hello, World 라는 문자 값을
 java : String str = "Hello, World";
              컬럼 별칭   expression 별칭
-sql : SELECT empno e, 'Hello, World' h , ;   
+sql : SELECT empno e, 'Hello, World' h    
       FROM emp;
       
 날짜 2020년 9월 2일이라는 날짜 값을...
