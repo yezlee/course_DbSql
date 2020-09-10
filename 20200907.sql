@@ -44,7 +44,7 @@ FROM(SELECT ROWNUM rn, a.*
            FROM emp)a)
 WHERE rn BETWEEN 11 AND 20;
 
-순서가 FROM -> SELECT -> WHERE
+순서가 FROM -> WHERE -> SELECT
 
 
 정렬의 기준을 해주지 않아서 내일했을땐 나오는 사람이 바뀌어있을수도 있어
@@ -161,10 +161,10 @@ WHERE ename = 'SMITH';    그냥 이게 젤좋음 - 컬럼을 가공하지말라
 
 문자열 관련함수
 SELECT CONCAT('Hello', ',World') concat,
-       SUBSTR('Hello, World', 1, 5) substr,    -- 5가 endindex.
+       SUBSTR('Hello, World', 1, 5) substr,    -- 5가 endindex. SUBSTR("문자열", "시작위치", "길이")- SUBSTR 함수는 문자단위로 시작위치와 자를 길이를 지정하여 문자열을 자른다.
        SUBSTR('Hello, World', 5) substr2,  -- 이렇게 시작 인덱스만 주는 경우도 있다
        LENGTH('Hello, World') length,
-       INSTR('Hello, World', 'W')instr,
+       INSTR('Hello, World', 'W')instr, --INSTR(문자열, 검색할 문자, 시작지점, n번째 검색단어) 함수는 찾는 문자의 위치를 반환하는것입니다.
        INSTR('Hello, World', 'o')instr,
        INSTR('Hello, World', 'o', 5 + 1)instr2,       
        INSTR('Hello, World', 'o', INSTR('Hello, World', 'o') + 1) instr3,
@@ -201,6 +201,10 @@ SELECT  TRUNC(105.54, 1) trunc,  --첫번째 자리에서 버리는거
         TRUNC(105.55, 0) trunc3,
         TRUNC(105.55, -1) trunc4  
 FROM dual;
+
+
+SELECT TRUNC(sal/1000), sal, sal/1000 --TRUNC(sal/1000) 이건 그냥 소수점을 다 버리라는
+FROM emp;
 
 
 mod 나머지 구하는 함수
@@ -272,4 +276,8 @@ SELECT TO_DATE('2019/12/31', 'YYYY/MM/DD')LASTDAY,
        TO_DATE('2019/12/31', 'YYYY/MM/DD') -5 "LASTDAY BEFORE5",
        SYSDATE NOW,
        SYSDATE -3 NOW_BEFORE3
+FROM dual;
+
+
+SELECT TO_DATE('2019/12/31', 'YYYY/MM/DD'
 FROM dual;
