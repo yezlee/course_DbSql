@@ -4,7 +4,7 @@
 
 
 === SELECT 쿼리 문법 ===
-SELECT * | { column | expression [alias]}
+SELECT * | { column | expression (상수, SYSDATE..) [alias]} -- SUM(sal + comm)이런것도 expression
 FROM 테이블 이름;
 
 SQL 실행방법
