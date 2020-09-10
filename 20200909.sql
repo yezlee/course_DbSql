@@ -15,6 +15,7 @@ NULL 관련 함수
         System.out.println(expr1);
         
 2. NVL2(expr1, expr2, expr3)      --첫번째(sal)에 null이 없으면 두번째(comm)가 나오고 아니면 세번째가 나온다.
+--  NVL2(comm, sal+comm, sal) -> comm 이 null이 아니면 sal+comm, 그렇지 않으면 sal
     if(expr1 != null)
         System.out.println(expr2);
     else
@@ -52,7 +53,7 @@ FROM emp;
 comm 컬럼이 NULL일때 0으로 변경하여 sal 컬럼과 합계를 구한다.
 SELECT empno, ename, sal, comm,
        sal + NVL(comm, 0) nvl_sum,
-       sal + NVL2(comm, comm, 0) nvl2_sum,
+       sal + NVL2(comm, 0, 0) nvl2_sum,
        NVL2(comm, sal+comm, sal) nvl2_sum2,  --  comm이 null이 아니면 sal+comm, 그렇지 않으면 sal
        NULLIF(sal, sal) nullif,
        NULLIF(sal, 5000) nullif_sal,
