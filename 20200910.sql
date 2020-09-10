@@ -11,10 +11,10 @@ AVG(컬럼|익스프레션) : 그룹의 평균값을 반환
 SUM(컬럼|익스프레션) : 그룹의 합계값을 반환
 COUNT(컬럼 | 익스프레션 | *) : 그룹핑된 행의 갯수
 
-SELECT 행을 묶음 컬럼, 그룹함수
+SELECT 행을 묶은 컬럼, 그룹함수
 FROM 테이블명
 [WHERE]
-GROUP BY 행을 묶음 컬럼;
+GROUP BY 행을 묶은 컬럼;
 [HAVING 그룹함수 체크조건];
 
 SELECT *
@@ -25,10 +25,10 @@ ORDER BY deptno;
 SELECT 절에서 기술할수 없는 컬럼의 부분 -BUT 조금만 논리적으로 생각해봄 답이 나온다! 잘생각해봐
  : GROUP BY 절에 나오지 않은 컬럼이 SELECT 절에 나오면 에러;
 
-SELECT deptno, MIN(ename), COUNT(*), MIN(sal), MAX(sal), SUM(sal), TRUNC(AVG(sal),2) --, sal 이렇게 추가를 하면 답이 안나오지. deptno안에 10,20,30이 있고 부서 10안에 여러명 있는데 그냥 sal 찾어라고하면 누구의 sal?뭐를 찾아야하는지 몰라
+SELECT deptno, MIN(ename), COUNT(*), MIN(sal), MAX(sal), SUM(sal), TRUNC(AVG(sal),2) avg --, sal 이렇게 추가를 하면 답이 안나오지. deptno안에 10,20,30이 있고 부서 10안에 여러명 있는데 그냥 sal 찾어라고하면 누구의 sal?뭐를 찾아야하는지 몰라
 --MIN(ename) 이건 이름 알파벳 젤 빠른거
 FROM emp
-GROUP BY deptno, ename;
+GROUP BY deptno, ename; --ename을 여기에 넣으면 그룹바이 이름인데 이름은 그룹이아니고 각자 개인이라서 그냥 전체 다 나오게됨
 
 ---------------
 전체 직원(모든 행을 대상으로)중에 가장 많은 급여를 받는 사람의 값 - 근데 전체직원인데 deptno를 쓰면 전체직원을 못찾는디?
@@ -57,7 +57,7 @@ COUNT 함수 * 인자
 * : 행의 개수를 반환
 컬럼 | 익스프레션 : NULL값이 아닌 행의 개수
 
-SELECT COUNT(*), COUNT(mgr), COUNT(comm)
+SELECT COUNT(*), COUNT(mgr), COUNT(comm) -- NULL이 있으면 그거 빼고 행을 다 합쳐버림
 FROM emp;
 
 
@@ -67,11 +67,15 @@ NULL 연산의 특징 : 결과 항상 NULL이다.
 SELECT SUM(comm) --4개의 행만 더한거
 FROM emp;
 
-SELECT SUM(sal + comm), SUM(sal) + SUM(comm) -- SUM(sal + comm)이건 익스프레션이야 그룹함수가 적용되기전에
+SELECT SUM(sal + comm), SUM(sal) + SUM(comm) -- SUM(sal + comm)이건 익스프레션이야 그룹함수가 적용되기전에 
 FROM emp;
 
 SELECT SUM(sal), SUM(comm) ,SUM(sal + comm), SUM(sal) + SUM(comm)
 FROM emp;
+
+SELECT sal ,comm
+FROM emp;
+
 
 그룹함수 특징2 : 그룹화와 관련없는 상수(변하지않는값)들은 SELECT 절에 기술할 수 있다.
 SELECT deptno, SYSDATE, COUNT(*), 'TEST' , 1
@@ -80,10 +84,11 @@ GROUP BY deptno;
 
 
 그룹함수 특징3 :
-    SINGLE ROW 함수의 경우 WHERE 에 기술하는 것이 가능하다
+    SINGLE ROW 함수(단일 행을 기준으로 작업하고 행당 하나의 결과를 반환)의 경우 WHERE 에 기술하는 것이 가능하다
+    (multi row함수는 여러행을 기준으로 작업하고, 하나의 결과를 반환 - 예, 그룹함수 COUNT, SUM, AVG...)
     ex : SELECT *
          FROM emp
-         WHERE ename = UPPER('smith');
+         WHERE ename = UPPER('smith'); -- UPPER는 문자열을 대문자로 만들어줌
          
     그룹함수의 경우 WHERE에서 사용하는 것이 불가능하다.
         ==> HAVING 절에서 그룹함수에 대한 조건을 기술하여 행을 제한 할 수있다.
@@ -102,13 +107,15 @@ GROUP BY deptno;
 
 
 Q.
-GROUP BY 를 사용하면 WHERE 절을 사용 못하냐?
+GROUP BY 를 사용하면 WHERE 절을 사용 못하나??
 GROUP BY의 대상이 되는 행들을 제한할 때 WHERE절을 사용.
 
 SELECT deptno, COUNT(*)
 FROM emp
 WHERE sal > 1000
 GROUP BY deptno;
+--부서번호로 그룹핑을 할건데 샐러리가 1000불이상인 사람만 조회할거고, 부서넘버랑 1000불 이상 버는 사람 조회해.
+--1000불 못버는 사람은 총합에 포함이 안된거지.
 
 
 문제 grp1
@@ -121,6 +128,8 @@ SELECT deptno, MAX(sal) max_sal , MIN(sal) min_sal, ROUND(AVG(sal),2) avg_sal, S
 FROM emp
 GROUP BY deptno;
 
+
+
 ** GROUP BY 절에 기술한 컬럼이 SELECT 절에 오지 않아도 실행에는 문제가 없다
 
 
@@ -131,18 +140,14 @@ FROM dept;
 10	ACCOUNTING
 20	RESEARCH
 30	SALES
-40	OPERATIONS
+40	OPERATIONS  
+
+SELECT deptno, max(sal), min(sal)
+FROM emp
+GROUP BY deptno;
 
 
-  
---뻘짓
-SELECT *
-FROM (SELECT ROWNUM rn, a.*   
-      FROM
-        (SELECT deptno, MAX(sal) max_sal , MIN(sal) min_sal, ROUND(AVG(sal),2) avg_sal, SUM(sal) sum_sal, COUNT(sal) count_sal, COUNT(mgr) count_mgr, COUNT(*)count_all
-         FROM emp
-         GROUP BY deptno) a)
-WHERE rn BETWEEN 1 AND 10;
+
 
 
 
@@ -164,14 +169,24 @@ SELECT TO_CHAR(hiredate, 'yyyymm') HIRE_YYYYMM , COUNT(*) cnt -- COUNT(TO_CHAR(h
 FROM emp
 GROUP BY TO_CHAR(hiredate, 'yyyymm');
 
-SELECT TO_CHAR(hiredate, 'yyyymm') HIRE_YYYYMM , COUNT(*) cnt -- 이렇게 하면 hiredate가 그룹바이 되서 일자까지 다 똑같아야 그룹으로 묶여. 그래서 월까지만 같이 그룹으로 묶으려면 위방법으로
+SELECT TO_CHAR(hiredate, 'yyyymm') HIRE_YYYYMM , COUNT(*) cnt 
 FROM emp
-GROUP BY hiredate;
+GROUP BY hiredate; -- 이렇게 하면 hiredate가 그룹바이 되서 일자까지 다 똑같아야 그룹으로 묶여. 그래서 월까지만 같이 그룹으로 묶으려면 위방법으로
 
 
 문제5 부터 과제
+SELECT TO_CHAR(hiredate, 'yyyy') hire_yyyy, COUNT(*)cnt
+FROM emp
+GROUP BY TO_CHAR(hiredate, 'yyyy');
 
+문제6
+SELECT COUNT(deptno)cnt
+FROM dept;
 
+문제7
+SELECT COUNT(COUNT(deptno)) cnt
+FROM emp
+GROUP BY deptno;
 
 
 
@@ -210,17 +225,24 @@ emp.empno (o) , empno (o)
 
 컬럼이 어디 한쪽에만 있으면 안적어도 됨 근데 둘다있으면 어떤건지 적어줘야함
 SELECT emp.empno, deptno, dname
+FROM emp NATURAL JOIN dept; --여기 테이블 둘다 deptno칼럼 똑같은게 들어있음
+
+SELECT empno, ename, deptno, dname, loc --스미스 부서번호가 20이야. dept테이블을 통해서 스미스 부서 이름이 리서치고 일하는곳이 달라스인걸 알수있지
 FROM emp NATURAL JOIN dept;
 
 
 SELECT *
-FROM emp NATURAL JOIN dept;
---컬럼명이 같은것끼리 연결
+FROM EMP;
 
 SELECT *
-FROM emp;
+FROM DEPT;
+
 SELECT *
-FROM dept;
+FROM emp NATURAL JOIN dept;
+--컬럼명이 같은것끼리 연결. 
+-- 오 신기하다. 컬럼명이 같은것끼리 중복되는 번호에 따라 다른 정보도 같이 딸려서 적힘. 그래서 부서이름, 로케이션 다 알수있음
+
+
 
 
 NATURAL JOIN을 ORACLE 문법으로
@@ -231,14 +253,22 @@ SELECT *
 FROM emp, dept
 WHERE emp.deptno = dept.deptno;
 
+SELECT dname, ename, loc, dept.deptno 
+FROM emp, dept
+WHERE emp.deptno = dept.deptno;
+
 
 ORA-00918: column ambiguously defined
 에러뜸. 컬럼이 여러개의 테이블에 동시에 존재하는 상황에서 테이블 한정자를 붙이지 않아서
 오라클 입장에선 해당 칼럼이 어떤 테이블의 칼럼인지 알수가 없는 상황에서 발생하는 에러
-deptno 컬럼은 emp, dept 테이블 양쪽 모두에 존재한다.
-SELECT *
+deptno 컬럼은 emp, dept 테이블 양쪽 모두에 존재한다. 
+SELECT * 
 FROM emp, dept
 WHERE deptno = deptno;
+위아래 둘다 에러. 어디 deptno인지 모르자나
+SELECT deptno 
+FROM emp, dept
+WHERE emp.deptno = dept.deptno;
 
 
 인라인뷰 별칭처럼, 테이블 별칭을 부여하는게 가능
@@ -256,6 +286,7 @@ WHERE e.deptno = d.deptno;
 
 
 
+
 ANSI-SQL : JOIN WITH USING
     조인하려는 테이블간 같은 이름의 컬럼이 2개 이상일 때 하나의 컬럼으로만 조인을 하고 싶을 때 사용
 SELECT *
@@ -265,7 +296,7 @@ FROM emp JOIN dept USING (deptno);
 SELECT *
 FROM emp, dept
 WHERE emp.deptno = dept.deptno;
-
+--위에 내츄럴조인을 오라클로 하려는 방법이랑 똑같아
 
 
 ANTI-SQL : JOIN WITH ON - 조인 조건을 개발자가 직접 기술
@@ -288,11 +319,15 @@ WHERE emp.deptno = dept.deptno
 논리적인 형태에 따른 조인 구분
 1. SELF JOIN : 조인하는 테이블이 서로 같은 경우
 
-SELECT e.empno, e.ename, e.mgr, m.ename
+SELECT empno, ename, mgr
+FROM emp;
+
+SELECT e.empno, e.ename, e.mgr, m.ename manager
 FROM emp e JOIN emp m ON( e.mgr = m.empno);
 --어떤 emp에서 가져온다는지 몰라서 별칭을 붙여준거. 그래서 emp.empno -> e.empno 이렇게 바꿔주고.
 -- ON( e.mgr = m.empno) 이거 헷갈리면 엑셀에 그리던가해서 그림으로 그려서 이해해라.
-
+-- 이게, employer 목록이 있는 파일에서 매니저를 가져와서 -> m파일에 employer number에 넣어주는거지. 
+-- 그럼 새롭게 만든 manager컬럼에 employer들 매니저가 들어가는거
 
 오라클로 작성
 SELECT e.empno, e.ename, e.mgr, m.ename
@@ -300,7 +335,13 @@ FROM emp e , emp m
 WHERE e.mgr = m.empno;
 
 -> KING의 경우 mgr컬럼의 값이 NULL이기 때문에 e.mgr = m.empno 조건을 충족 시키지 못함
-그래서 조인 실패해서 14건중 13건의 데이터만 조회
+그래서 조인 실패해서 14건중 13건의 데이터만 조회 - 셀프조인을 쓰던 오라클을 쓰던 똑같이 킹은 조회 못해
+
+SELECT *
+FROM emp, dept
+WHERE emp.deptno = dept.deptno;
+--이건 위에서 가져온 내츄럴조인이랑 join with using
+
 
 
 
@@ -309,6 +350,13 @@ SELECT *
 FROM emp, dept
 WHERE emp.empno = 7369
   AND emp.deptno != dept.deptno;
+  
+SELECT *
+FROM emp;
+
+SELECT *
+FROM dept;
+  
   
 sal를 이용하여 등급을 구하기  
 SELECT *
@@ -344,12 +392,50 @@ SELECT empno, ename, sal, grade
 FROM emp, salgrade 
 WHERE sal BETWEEN losal AND hisal;
 
+--grade만있는 salgrade 테이블이랑 salary가 있는 emp 테이블에서
+--where salary between low salary and high salary.
+-- 낮은거에서 높은걸로 가야돼. 로우샐러리랑 하이샐러리 위치 바꾸면 안됨.
+
 위의 SQL을 ANSI-SQL로 변경
 SELECT empno, ename, sal, grade
 FROM emp JOIN salgrade ON ( sal BETWEEN losal AND hisal);
+--from emp (table) join salgrade (table) on sal (column) between losal and hisal.
+--영어문장으로 만들어서 이해하고 외워버리자
 
 SELECT  empno, ename, sal, grade
 FROM emp JOIN salgrade ON ( sal >= losal AND sal <= hisal);
 
 
-문제 JOIN0 ~ 0_4 4문제;
+문제 JOIN0 - 테이블이 다르고 칼럼명이 같을때
+SELECT empno, ename, dept.deptno, dname
+FROM emp JOIN dept ON(emp.deptno = dept.deptno);
+
+SELECT *
+FROM DEPT;
+
+
+문제 join0_1
+SELECT empno, ename, dept.deptno, dname
+FROM emp JOIN dept ON(emp.deptno = dept.deptno)
+WHERE dept.deptno IN (10, 30);
+
+
+문제 join0_2
+SELECT empno, ename, sal, dept.deptno, dname
+FROM emp JOIN dept ON(emp.deptno = dept.deptno)
+WHERE sal > 2500
+ORDER BY deptno;
+
+문제 join0_3
+SELECT empno, ename, sal, dept.deptno, dname
+FROM emp JOIN dept ON(emp.deptno = dept.deptno)
+WHERE sal > 2500 AND empno > 7600;
+
+문제 join0_4
+SELECT empno, ename, sal, dept.deptno, dname
+FROM emp JOIN dept ON(emp.deptno = dept.deptno)
+WHERE sal > 2500 AND empno > 7600 AND dname = 'RESEARCH';
+
+
+SELECT NEXT_DAY(TO_DATE('20191010','YYYYMMDD'),1)
+FROM dual;
