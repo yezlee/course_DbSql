@@ -103,7 +103,7 @@ GROUP BY deptno;
         SELECT deptno, COUNT(*)
         FROM emp        
         GROUP BY deptno
-        HAVING COUNT (*) >= 5;
+        HAVING COUNT (*) >= 6;
 
 
 Q.
@@ -183,11 +183,22 @@ GROUP BY TO_CHAR(hiredate, 'yyyy');
 SELECT COUNT(deptno)cnt
 FROM dept;
 
-문제7
+SELECT COUNT(*)cnt
+FROM dept;
+
+문제7 직원이 속한 부서의 개수를 구하기
+1. 부서가 몇개 존재하는지? ==> 3행
+
+SELECT COUNT(*)
+FROM
+    (SELECT deptno
+    FROM emp
+    GROUP BY deptno) a;
+
 SELECT COUNT(COUNT(deptno)) cnt
 FROM emp
 GROUP BY deptno;
-
+-- 이건 문제가 조금 있엉... 이 문제가.
 
 
 ****** WHERE + JOIN SELECT SQL의 모든 것 ****** 매우매우매우 중요
@@ -408,7 +419,14 @@ FROM emp JOIN salgrade ON ( sal >= losal AND sal <= hisal);
 
 문제 JOIN0 - 테이블이 다르고 칼럼명이 같을때
 SELECT empno, ename, dept.deptno, dname
-FROM emp JOIN dept ON(emp.deptno = dept.deptno);
+FROM emp JOIN dept ON(emp.deptno = dept.deptno)
+ORDER BY emp.deptno;
+
+SELECT emp.empno, emp.ename, emp.deptno, dept.dname
+FROM emp, dept
+WHERE emp.deptno = dept.deptno
+ORDER BY emp.deptno;
+
 
 SELECT *
 FROM DEPT;
