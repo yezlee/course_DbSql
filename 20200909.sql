@@ -53,6 +53,7 @@ FROM emp;
 comm 컬럼이 NULL일때 0으로 변경하여 sal 컬럼과 합계를 구한다.
 SELECT empno, ename, sal, comm,
        sal + NVL(comm, 0) nvl_sum,
+       NVL(comm + sal, sal) nvl_sum2,
        sal + NVL2(comm, 0, 0) nvl2_sum,
        NVL2(comm, sal+comm, sal) nvl2_sum2,  --  comm이 null이 아니면 sal+comm, 그렇지 않으면 sal
        NULLIF(sal, sal) nullif,
