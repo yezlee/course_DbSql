@@ -26,8 +26,10 @@ SELECT ename,
        SUBSTR('20200908', 1, 4) || '/' || SUBSTR('20200908', 5, 2) || '/' || SUBSTR('20200908', 7, 2) h, 
        hiredate, TO_CHAR(hiredate, 'yyyy/mm/dd hh24:mi:ss') h1,
        TO_CHAR(hiredate + 1 , 'yyyy/mm/dd hh24:mi:ss') h2, 
-       TO_CHAR(hiredate + 1/24 , 'yyyy/mm/dd hh24:mi:ss') h3,     
-       TO_CHAR(TO_DATE('20200908', 'YYYYMMDD'), 'YYYY/MM/DD') h4
+       TO_DATE(hiredate + 1/24 , 'yyyy/mm/dd hh24:mi:ss') h3,     
+       TO_CHAR(TO_DATE('20200908', 'YYYYMMDD'), 'YYYY/MM/DD') h4,
+       TO_DATE(TO_CHAR(SYSDATE, 'YYYYMMDD'), 'YYYYMMDD'),
+       SYSDATE       
 FROM emp;
 
 
@@ -260,7 +262,7 @@ NULL과 관련된 함수
    
    --첫번째 인자에 null이 있으면 0이 나오고 두번째 인자에 null 이 있음 comm이 나와라 그게 NVL함수임.
    
-SELECT empno, sal, comm, sal+comm, NVL(comm, 0), sal + NVL(comm, 0)
+SELECT empno, sal, comm, sal+comm, NVL(comm, 0), NVL(comm, sal), sal + NVL(comm, 0)
 FROM emp;
     
 
