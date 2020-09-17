@@ -148,11 +148,11 @@ sql칠거지악
 
 SELECT ename, LOWER(ename)
 FROM emp
-WHERE LOWER(ename) = 'smith';    이건 LOWER에 있는 ename을 14번 실행해서 알수있는거
+WHERE LOWER(ename) = 'smith';    이건 ename에 있는 모든 이름을 lower해서 'smith'를 찾는거니깐 14번 실행
 
 SELECT ename, LOWER(ename)
 FROM emp
-WHERE ename = UPPER('smith');    이건 한번만 실해하면 됨
+WHERE ename = UPPER('smith');    이건 한번만 실행하면 됨
 
 SELECT ename, LOWER(ename)
 FROM emp
@@ -160,21 +160,21 @@ WHERE ename = 'SMITH';    그냥 이게 젤좋음 - 컬럼을 가공하지말라
 
 
 문자열 관련함수
-SELECT CONCAT('Hello', ',World') concat,
+SELECT CONCAT('Hello', ', World') concat,
        SUBSTR('Hello, World', 1, 5) substr,    -- 5가 endindex. SUBSTR("문자열", "시작위치", "길이")- SUBSTR 함수는 문자단위로 시작위치와 자를 길이를 지정하여 문자열을 자른다.
        SUBSTR('Hello, World', 5) substr2,  -- 이렇게 시작 인덱스만 주는 경우도 있다
        LENGTH('Hello, World') length,
        INSTR('Hello, World', 'W')instr, --INSTR(문자열, 검색할 문자, 시작지점, n번째 검색단어) 함수는 찾는 문자의 위치를 반환하는것입니다.
-       INSTR('Hello, World', 'o')instr,
+       INSTR('Hello, World', 'o')instr1,
        INSTR('Hello, World', 'o', 5 + 1)instr2,       
        INSTR('Hello, World', 'o', INSTR('Hello, World', 'o') + 1) instr3,
        LPAD('Hello, World', 15, '*') lpad,   -- 15글자로 만들고 싶은데 빈자리를 별로 채우는거
        LPAD('Hello, World', 15) lpad2, -- 별을 안써주면 빈칸으로 채워서 15자리를 만들지
        RPAD('Hello, World', 15) rpad, -- 
-       REPLACE('Hello, World','Hello', 'Hell') replace,
+       REPLACE('Hello, World','Hello', 'Bye') replace,
        TRIM('Hello, World') trim, -- 문자열 가운데 있는 공백은 건들지 않고, 그 외엔 공백이 없으니 똑같이 나옴
        TRIM('  Hello, World      ') trim2,
-       TRIM('H' FROM 'Hello, World') trim3
+       TRIM('d' FROM 'Hello, World') trim3 -- 문자열 앞뒤로 제거
 FROM dual;
 
 
@@ -256,7 +256,7 @@ SELECT SYSDATE, SYSDATE + 5, SYSDATE -5,
        SYSDATE + 1/24, SYSDATE + 1/24/60
 FROM dual;
 
-문제 fn_1
+
 sql : 'Hello, World', 5 -- 문자열쓰는방법, 숫자 쓰는 방법
 java : "Hello, World", 5
 
@@ -267,10 +267,7 @@ sql : nsl 포맷에 설정된 문자열 형식을 따르거나
       TO_DATE 함수를 이용하여 명확하기 명시
       TO_DATE('날짜 문자열', '날짜 문자열 형식')
 
-
-SELECT '2019/12/31' LASTDAY, SYSDATE -256 LASTDAY_BEFORE5,  SYSDATE NOW,  SYSDATE -3 NOW_BEFORE3
-FROM dual;
-
+문제 fn_1
 답
 SELECT TO_DATE('2019/12/31', 'YYYY/MM/DD')LASTDAY,
        TO_DATE('2019/12/31', 'YYYY/MM/DD') -5 "LASTDAY BEFORE5",
