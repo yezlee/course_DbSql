@@ -66,7 +66,7 @@ IN <==> NOT IN
 사원중 소속 부서가 10번이 아닌 사원 조회
 SELECT *
 FROM emp
-WHERE deptno NOT IN (10)
+WHERE deptno NOT IN (10);
 
 SELECT *
 FROM emp;
@@ -138,6 +138,13 @@ SELECT *
 FROM emp
 WHERE mgr IN (7698, 7839, NULL); 
 mgr = 7698 OR mgr = 7839 OR mgr = NULL; 이걸 null은 is로 계산을 안해
+
+SELECT *
+FROM emp
+WHERE mgr NOT IN (7698, 7839, NULL); 
+mgr != 7698 OR mgr != 7839 OR mgr != NULL; 
+이건 아무것도 안나와
+
 
 위에거를 실행하게 하려면 아래처럼 null은 in 같은거 안돼. 
 SELECT *
