@@ -226,6 +226,8 @@ emp테이블에서 9000번 사전의 데이터(행)를 완전히 삭제
 DELETE emp
 WHERE empno = 9000;
 
+SELECT *
+FROM emp;
 
 UPDATE, DELETE절을 실행하기 전에
 WHERE절에 기술한 조건으로 SELECT을 먼저 실행하여, 변경, 삭제되는 행을 눈으로 확인해보자 - 더블체크 하라는거지
