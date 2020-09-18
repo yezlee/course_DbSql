@@ -567,15 +567,14 @@ CREATE TABLE emp_test (
 
 1. dept_test 테이블의 deptno 컬럼에 PRIMARY KEY 제약 조건 추가
 
-ALTER TABLE 테이블명 ADD CONSTRAINT 제약조건명 제약조건 타입;
-ALTER TABLE 테이블명 DROP CONSTRAINT 제약조건명;
-
 ALTER TABLE dept_test ADD CONSTRAINT PK_DEPT_TEST PRIMARY KEY (deptno);
 
 2. emp_test 테이블의 empno컬럼에 PRIMARY KEY 제약 조건 추가
 
 ALTER TABLE emp_test ADD CONSTRAINT PK_EMP_TEST PRIMARY KEY (empno);
 
-
 3. emp_test 테이블의 deptno컬럼이 dept_test 컬럼의 deptno컬럼을
     참조하는 FOREIGN KEY 제약 조건 추가
+    
+ALTER TABLE emp_test ADD CONSTRAINT FK_EMP_TEST_DEPT_TEST 
+    FOREIGN KEY (deptno) REFERENCES dept_test(deptno);    
