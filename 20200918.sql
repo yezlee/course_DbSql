@@ -16,7 +16,7 @@ DROP  객체타입 객체이름;
     - 모델링 툴을 사용하여 설계하게 되면 툴에서 설계된 테이블을 생성하는 구문을 자동으로 만들어준다.
 
 테이블을 생성하는 문법
-CREATE TABLE [오라클 사용자 이름].테이블명(           <-이름은 들어갈수도 안들어갈수도
+CREATE TABLE [오라클 사용자 이름].테이블명(           <-사용자 이름은 들어갈수도 안들어갈수도
     컬럼명 컬럼의 데이터타입, 
     컬럼명2 컬럼의 데이터타입2, ...
 );
@@ -38,6 +38,9 @@ CREATE TABLE ranger(
    reg_dt DATE);
 
 INSERT INTO ranger ( ranger_no, ranger_nm, reg_dt) VALUES (1, 'brown', SYSDATE);
+INSERT INTO ranger VALUES (1, 'brown', SYSDATE); 
+위에 어떤거나 해도 상관없지. 선택해서 넣어주거나, 어차피 전체 다 컬럼을 넣어주는 거니까
+
 
 SELECT *
 FROM ranger;
@@ -53,7 +56,7 @@ DROP TABLE ranger;
 2. 문자 : VARCHAR2(사이즈 - byte), CHAR(X 사실상 안씀) 
         - VARCHAR2의 최대 사이즈는 4000byte
         - VARCHAR2(2000) : 최대 2000 byte를 담을 수 있는 문자 타입
-          java - 2byte, ORACLE XE 11G - 3BYTE 임.
+          java - 2byte, ORACLE XE 11G - 3BYTE 임. 한글이.
           
          CHAR(1~2000 byte), 고정길이 문자열
          CHAR(5) 'test'
@@ -69,7 +72,7 @@ DROP TABLE ranger;
          시스템에서 문자 형식으로 많이 사용한다면 문자 타입으로 사용도 고려 해볼만 하다.
          
 4. Large OBJECT 
-    4.1 CLOB (Character Large Object) : 문자열을 저장할 수 있는 타입, 사이즈 : 4BG - 문자가 길면 씨랍 이거쓰면됨
+    4.1 CLOB (Character Large Object) : 문자열을 저장할 수 있는 타입, 사이즈 : 4GB - 문자가 길면 씨랍 이거쓰면됨
     4.2 BLOB : 바이너리 데이터, 사이즈 : 4GB
      - CMS - 사용료 월 2만원 - 중요한거 할때 비랍을 사용하기도 함.
 
@@ -117,7 +120,7 @@ INSERT INTO dept_test VALUES (NULL, 'ddit', 'daejeon');
           에러뜸  -> cannot insert NULL into ("YEZ"."DEPT_TEST"."DEPTNO")
             이유: primary key 제약에 의해 deptno 컬럼에는 NULL값이 들어갈 수 없다.
 
-90번 부서는 존재하지 않고 NULL 값이 아니므로 정상적으로 등록
+90번 부서는 존재하지 않고(중복되지않고) NULL 값이 아니므로 정상적으로 등록
 INSERT INTO dept_test VALUES (90, 'ddit', 'daejeon');
 
 INSERT INTO dept_test VALUES (90, 'ddit', 'daejeon');
@@ -128,7 +131,7 @@ INSERT INTO dept_test VALUES (90, 'ddit', 'daejeon');
 
 
 비교
-dept 테이블에는 deptno컬럼에 PRIMARY KEY 제약이 없는 상태
+dept 테이블에는 deptno컬럼한테 PRIMARY KEY 제약이 없는 상태
 그렇기 때문에 deptno 컬럼의 값이 중복이 가능
 INSERT INTO dept VALUES (90, 'ddit', 'daejeon');
 INSERT INTO dept VALUES (90, 'ddit', 'daejeon');
@@ -168,18 +171,18 @@ CREATE TABLE dept_test(
 INSERT INTO dept_test VALUES (90, 'ddit', 'daejeon');
 INSERT INTO dept_test VALUES (90, 'ddit', 'daejeon');
 ->unique constraint (YEZ.PK_DEPT_TEST) violated 에러 찾기가 쉽다. 어디서 에러났는지 이름이 뜨기 때문에
-
+유일한 제한이 위반되었다고.
 
 2. 테이블 생성시 테이블 레벨로 제약조건 생성
 
 이미 존재하는 테이블이라 드랍부터 해주자
+DROP TABLE dept_test;
+
 CREATE TABLE 테이블명 (
     컬럼1 컬럼1의 데이터타입,
     컬럼2 컬럼2의 데이터타입,     <- 마지막인데도 , 붙임 
     [TABLE LEVEL 제약조건]
 );
-
-DROP TABLE dept_test;
 
 CREATE TABLE dept_test(
     deptno NUMBER(2),
@@ -192,7 +195,7 @@ CREATE TABLE dept_test(
 deptno 컬럼의 값은 90으로 같지만 dname 컬럼의 값이 다르므로
 PRIMARY KEY (deptno, dname) 설정에 따라 데이터가 입력될 수 있다.
 
-복합 컬럼에 대한 제약조건은 컬럼 레벨에서는 설정이 불가하고
+복합 컬럼에 대한 제약조건은 컬럼 레벨(단계?)에서는 설정이 불가하고
 테이블 레벨, 혹은 테이블 생성 후 제약조건을 추가하는 형태에서만 가능
 
 INSERT INTO dept_test VALUES (90, 'ddit', 'daejeon');
