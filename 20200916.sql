@@ -101,7 +101,8 @@ FROM cycle
 WHERE cid = 2 AND pid IN (SELECT pid
                           FROM cycle
                           WHERE cid = 1);
-                          
+
+--아님                          
 SELECT *
 FROM cycle, customer, product
 WHERE cycle.cid = 1 AND cycle.cid = product.pid AND cycle.pid IN (SELECT pid
@@ -109,14 +110,14 @@ WHERE cycle.cid = 1 AND cycle.cid = product.pid AND cycle.pid IN (SELECT pid
                                                                   WHERE cid = 2);
 
 
-
+--오류
 SELECT cycle.cid, customer.cnm, cycle.pid, product.pnm, cycle.day, cycle.cnt
 FROM cycle, customer, product
 WHERE cycle.cid = 1 AND customer.cid  = customer.cid AND cycle.pid = product.pid AND cycle.pid = product.pid IN (SELECT pid
                                                                                 FROM cycle
                                                                                 WHERE cid = 2);
 
-
+--정답
 SELECT cycle.cid, customer.cnm, cycle.pid, product.pnm, cycle.day, cycle.cnt
 FROM cycle, customer, product
 WHERE cycle.cid = 1
@@ -347,6 +348,7 @@ MINUS
 SELECT empno, ename
 FROM emp
 WHERE empno IN (7369, 7782);    
+
 
 집합연산자 (사용시) 특징
 1. 컬럼명은 첫번째 집합의 컬럼명을 따라간다.
