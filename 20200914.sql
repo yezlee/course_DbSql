@@ -223,10 +223,15 @@ JOIN 구분
 SELECT e.empno, e.ename, m.empno, m.ename
 FROM emp e , emp m
 WHERE e.mgr = m.empno; -- 사원쪽에 있는 매니저의 정보를 읽어야하니까 이걸 잘해야함
+
+SELECT empno,ename,mgr
+FROM emp;
+
+
         
 ANSI-SQL        
 SELECT e.empno, e.ename, e.mgr, m.ename
-FROM emp e JOIN emp m ON (e.mgr = m.empno); ******************************************************이거 다시 이해하기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+FROM emp e JOIN emp m ON (e.mgr = m.empno); 
 
 ANSI-SQL --위아래 결과 같음
 SELECT e.empno, e.ename, e.mgr, m.ename
