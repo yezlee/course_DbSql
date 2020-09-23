@@ -126,7 +126,7 @@ DML : Data Manipulate Language
 INSERT 3가지 
 1. 테이블의 특정 컬럼에만 데이터를 입력할 때(입력되지 않은 컬럼은 NULL로 설정 된다)
 INSERT INTO 테이블명 (컬럼1, 컬럼2...) VALUES (컬럼1의 값1, 컬럼2의 값2...);
-DEST emp;
+DESC emp;
 
 INSERT INTO emp (empno, ename) VALUES (9999, 'brown');
 
@@ -146,23 +146,31 @@ INSERT INTO 테이블명 VALUES (컬럼1의 값1, 컬럼2의 값2...);
 
 DESC dept;
 
-컬럼을 기술하지 않았기 때문에 테이블에 정의된 모든 컬럼에 대해 값을 기술해야하나
+INSERT INTO dept VALUES ( 98, '대덕', '대전');
+SELECT *
+FROM dept;
+
+
+컬럼을 써주지 않았기 때문에 테이블에 정의된 모든 컬럼에 대해 값(values)을 써줘야 하지만
 3개중에 2개만 기술하여 에러 발생.
 INSERT INTO dept VALUES (97, 'DDIT');
 -> 에러 not enough values
 
 
-3. SELECT 결과를(여러행일 수도 있다) 테이블에 입력
+3. SELECT 결과를 테이블에 입력(여러행을 넣을수도 있다) 
 - values는 사라짐
-INSERT INTO 테이블명
-SELECT  ------------못씀
-
+INSERT INTO 테이블명[(co1,...]
+SELECT  구문;
 
 INSERT INTO emp (empno, ename)
 SELECT 9997, 'cony' FROM dual
 UNION ALL
 SELECT 9996, 'moon' FROM dual;
 
+SELECT *
+FROM emp;
+
+ROLLBACK;
 
 날짜 컬럼 값 입력하기 - 함수도 입력할수있다- sysdate
 INSERT INTO emp VALUES (9996, 'james', 'CLERK', NULL, SYSDATE, 3000, NULL, NULL);
@@ -248,7 +256,7 @@ DELETE emp;
 TRUNCATE TABLE emp;
 
 
-//이건 조심해서 해야함. 20조건!! 
+//이건 조심해서 해야함. 20조 건!! 
 SELECT *
 FROM fastfood a, fastfood b, fastfood c, fastfood d --a하나가 1200건있고 그걸 또 b랑 조인해서 1200*1200에다가 또 c랑 조인해서 1200의 3승, 또 d랑 조인해서 1200의 4승이야. 20조임... 엄청 커서 오래걸려.
 WHERE a.gb = b.gb
