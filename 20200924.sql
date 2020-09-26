@@ -250,20 +250,11 @@ GROUP BY ROLLUP(job, deptno);
 
 
 
-SELECT NVL(job, '총계') job, deptno, grouping(job), grouping(deptno), SUM(sal + NVL(comm, 0)) sal
+SELECT job, deptno, grouping(job), grouping(deptno), SUM(sal + NVL(comm, 0)) sal
 FROM emp
 GROUP BY ROLLUP(job, deptno);
 
 문제 실습 2-1
-
-?????????????????????????????????????????????????????????
-SELECT DECODE(GROUPING(job), 1 , '총' , job) job, 
-       DECODE(GROUPING(deptno), 1, GROUPING(job), 1, '계', 
-                                1 , '소계', deptno) deptno, 
-       SUM(sal + NVL(comm, 0)) sal
-FROM emp
-GROUP BY ROLLUP(job, deptno);   
-???????????????????????????????????????????????????????
 
 SELECT CASE
             WHEN GROUPING(job) = 1 THEN '총'
@@ -279,6 +270,47 @@ FROM emp
 GROUP BY ROLLUP(job, deptno);
 
 
+DECODE(인자1,
+            비교값1, 반환값1,
+            비교값2, 반환값2,
+            비교값3, 반환값3 
+                [,기본값] );
+if( 인자1 == 비교값1)
+    return 반환값1
+else if( 인자1 == 비교값2)    
+    return 반환값2
+else if( 인자1 == 비교값3)    
+    return 반환값3    
+[else
+    return 기본값]
+
+?????????????????????????????????????????????????????????
+SELECT DECODE(GROUPING(job), 1 , '총' , job) job, 
+       DECODE(GROUPING(deptno), 1, GROUPING(job), 1, '계', 
+                                 deptno) deptno, 
+       SUM(sal + NVL(comm, 0)) sal
+FROM emp
+GROUP BY ROLLUP(job, deptno);   
+???????????????????????????????????????????????????????
+
+
+SELECT DECODE(GROUPING(job), 1, '총', job ) job ,
+       DECODE(GROUPING(job) + GROUPING(deptno), 2, '계',
+                                                1, '소계',
+                                                TO_CHAR(deptno) )deptno, 
+    
+      DECODE(GROUPING(job) || GROUPING(deptno), '11', '계',
+                                                '01', '소계',
+                                                TO_CHAR(deptno) )deptno,       
+       GROUPING(job), GROUPING(deptno), 
+       GROUPING(job) + GROUPING(deptno),
+       GROUPING(job) || GROUPING(deptno),
+       SUM(sal + NVL(comm, 0)) sal
+  FROM emp
+GROUP BY ROLLUP(job, deptno);
+
+
+
 문제 3
 SELECT deptno, job,  SUM(sal + NVL(comm, 0)) sal
 FROM emp
@@ -291,12 +323,11 @@ WHERE emp.deptno = dept.deptno
 GROUP BY ROLLUP(dname, job); 
 
 문제 5
-SELECT dept.dname, emp.job, SUM(emp.sal + NVL(comm, 0)) sal,GROUPING(dname), GROUPING(job)
-; 
-FROM emp, dept
-WHERE emp.deptno = dept.deptno
-GROUP BY ROLLUP(dname, job);
-
+SELECT NVL(dept.dname, '총합') dname, a.job, a.sal
+FROM  (SELECT deptno, job, SUM(sal + NVL(comm, 0)) sal
+       FROM emp
+       GROUP BY ROLLUP(deptno, job) ) a, dept        
+WHERE a.deptno = dept.deptno(+);
 
 
 GROUPING SETS
@@ -309,25 +340,3 @@ GROUPING SETS는 개발자가 필요로 하는 서브그룹을 직접 나열하�
 SELECT job, deptno, SUM(sal + NVL(comm, 0)) sal
 FROM emp
 GROUP BY GROUPING SETS(job, deptno); 
-
-
-
-               
-               
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
