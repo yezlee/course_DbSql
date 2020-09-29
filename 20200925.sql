@@ -348,6 +348,10 @@ commit;
 
 
 SELECT *
+FROM dept_h;
+
+
+SELECT *
 FROM dept_h
 START WITH deptcd = 'dept0';
 
@@ -376,6 +380,41 @@ CONNECT BY PRIOR deptcd = p_deptcd;
 
 
 
+sub_a3
+서브쿼리를 이용하여 emp_test 테이블에서 본인이 속한 부서의 평균급여보다 급여가 작은 직원의 급여를
+현재 급여해서 200추가해서 업데이트하는 쿼리 작성
+
+DROP TABLE emp_test;
+
+CREATE TABLE emp_test AS
+SELECT *
+FROM emp;
+
+답:
+UPDATE emp_test
+SET sal = sal + 200
+WHERE sal < (SELECT AVG(sal)
+             FROM emp_test
+             WHERE deptno = emp_test.deptno);
+
+
+풀이 : 
+emp테이블에서 부서의 평균 급여
+SELECT AVG(sal) 
+FROM emp_test
+GROUP BY deptno;
+
+본인이 속한 부서의 평균 급여보다 작은 직원의 급여
+SELECT *
+FROM emp_test
+WHERE deptno = (SELECT deptno
+                 FROM emp_test
+                 WHERE (SELECT AVG(sal) 
+                        FROM emp_test
+                        GROUP BY deptno  ) );
+                        
+                        
+
 
 
 
@@ -394,7 +433,7 @@ WHERE emp.deptno != dept.deptno;
 
 
 
-SELECT emp.empno, emp.ename, (SELECT * 
+SELECT emp.empno, emp.ename, (SELECT empno 
                               FROM dept ,emp
                               WHERE dept.deptno = emp.deptno)d 
 FROM emp;
@@ -492,5 +531,8 @@ WHERE EXISTS (SELECT 'X'
 
 
 SELECT *
-FROM emp
-WHERE 1 = 1;
+FROM emp e, emp m
+WHERE e.mgr = e.empno;  --안되네
+
+
+
