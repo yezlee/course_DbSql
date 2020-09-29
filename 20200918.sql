@@ -576,7 +576,7 @@ ALTER TABLE dept_test ADD CONSTRAINT PK_DEPT_TEST PRIMARY KEY (deptno);
 
 ALTER TABLE emp_test ADD CONSTRAINT PK_EMP_TEST PRIMARY KEY (empno);
 
-3. emp_test 테이블의 deptno컬럼이 dept_test 컬럼의 deptno컬럼을
+3. emp_test 테이블의 deptno컬럼이 dept_test 테이블의 deptno컬럼을
     참조하는 FOREIGN KEY 제약 조건 추가
     
 ALTER TABLE emp_test ADD CONSTRAINT FK_EMP_TEST_DEPT_TEST 
