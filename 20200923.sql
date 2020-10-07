@@ -278,7 +278,7 @@ SELECT *
 FROM emp_test2;
 
 
-UNCINDITION INSERT 실행시 테이블 마다 데이터를 입력할 컬럼을 조작하는 것이 가능
+UNCONDITIONAL INSERT 실행시 테이블 마다 데이터를 입력할 컬럼을 조작하는 것이 가능
 위에서 : INSERT INTO emp_test VALUES(....) 테이블의 모든 컬럼에 대해 입력
         INSERT INTO emp_test (empno) VALUES (9999) 특정 컬럼을 지정하여 입력 가능
 
