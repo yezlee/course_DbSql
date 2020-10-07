@@ -12,7 +12,7 @@
     DATE 관련함수
     - 월의 마지막일자 구하기
     
-5. 
+
 
 
 
@@ -20,6 +20,7 @@
 1. 인위적으로 여러개의 행을 만들기 
 (계층쿼리 : 행과 행을 연결하는 거)
 CONNECT BY LEVEL ==> CROSS JOIN 과 비슷한 개념
+연결 가능한 모든 행을 연결
 
 (조인 : 테이블의 행과, 다른 테이블의 행을 연결. 즉 컬럼이 확장.);
 
@@ -30,7 +31,7 @@ CONNECT BY LEVEL <= 10;
 만약 행이 두개면 2의 2승 / 4의 2승  이런식으로 계속 늘어나. 그래서 행이 많을땐 CONNECT BY LEVEL 잘 안써.
 수가 그렇게 많은걸 원한게 아니라서
 
-SELECT LEVEL, dummy, LTIRM(SYS_CONNECT_BY_PATH
+SELECT LEVEL, dummy, LTRIM(SYS_CONNECT_BY_PATH(dummy, '-'), '-')
 FROM dual
 CONNECT BY LEVEL <= 31;
 
@@ -39,7 +40,11 @@ CONNECT BY LEVEL <= 31;
 EX : '202010' ==> 31
      날짜가 있으면 원하는 항목(년, 월, 일, 시, 분, 초)만 추출 할 수 있다.
      TO_CHAR(날짜, '원하는 항목')
-     
+     TO_CHAR(해당날짜의 마지막날까 구하는 함수(TO_DATE('202010', '포맷')), '원하는항목')
+
+       TO_DATE('202010', 'YYYYMM'): 일자를 설정하지 않았기 때문에 1일자 0시 0분 0초
+       ==> 마지막 날짜로 변경   
+        
      SELECT TO_CHAR(LAST_DAY(TO_DATE('201010', 'YYYYMM')), 'DD')
      FROM dual;
     
@@ -47,7 +52,7 @@ EX : '202010' ==> 31
      FROM dual
      CONNECT BY LEVEL <= TO_CHAR(LAST_DAY(TO_DATE('201010', 'YYYYMM')), 'DD');
     
-    실제 필요한 값은 날짜. (20201001 ~ 20201031)
+    실제 필요한 값은 날짜 ==> (20201001~20201031)  
     DATE + 정수 = DATE에서 정수를 일자로 취급해서 더한 날짜
     2020.10.05 + 5 = 2020.10.10
     
@@ -70,7 +75,8 @@ EX : '202010' ==> 31
     FROM dual
     CONNECT BY LEVEL <=  TO_CHAR(LAST_DAY(TO_DATE('202010', 'YYYYMM')) , 'DD');
                          날짜만 필요하니깐 캐릭터로 바꿔서 DD만 잘라내는거지
-                         
+    
+                        
                       
     SELECT day, d, iw, DECODE(d, 1, day) d1
     FROM (SELECT TO_DATE('202010', 'YYYYMM') + LEVEL-1 day,
@@ -92,6 +98,7 @@ EX : '202010' ==> 31
           FROM dual
           CONNECT BY LEVEL <=  TO_CHAR(LAST_DAY(TO_DATE('202010', 'YYYYMM')) , 'DD'));
                              
+               
                              
     SELECT /*day, d,*/ iw, DECODE(d, 1, day) d1,  DECODE(d, 2, day) d2,
                        DECODE(d, 3, day) d3,  DECODE(d, 4, day) d4, 
@@ -150,6 +157,7 @@ EX : '202010' ==> 31
     GROUP BY DECODE(d, 1, iw+1, iw)
     ORDER BY DECODE(d, 1, iw+1, iw);                         
    
+   해당 날짜의 요일에 따라서 새롭게 만든 7개 컬럼(일~월)에 날짜를 위치 시킨다
    
     SELECT MIN(DECODE(d, 1, day)) d1,  MIN(DECODE(d, 2, day)) d2,
            MIN(DECODE(d, 3, day)) d3,  MIN(DECODE(d, 4, day)) d4, 
@@ -173,6 +181,14 @@ EX : '202010' ==> 31
 PL / SQL 
 Prodedual Language / SQL
 
+10-10억 2-50억  18시간
+
+2시간: 데이터가 많아짐 (200 -> 13,000)
+작업이 안끝남 ==> 15분~20분
+
+칠거지악 : en-core -> 부사장  b2en -> 수석컨설트 dibian
+PL/SQL : Procedual Language / SQL
+
 SQL은 집합적인 언어인데, 여기에다 절차적 요소를 더함
 절차적요소( 반복문, 조건 제어 - 분기처리)
 
@@ -183,7 +199,8 @@ SQL은 집합적인 언어인데, 여기에다 절차적 요소를 더함
 
 PL/SQL 사용방법 : PL/SQL block을 통해서 실행
 
-PL/SQL block 구조 : JAVA에서 TRY/CATCH랑 비슷
+PL/SQL block 구조 : JAVA에서 TRY/CATCH랑 비슷  - 중첩 가능
+
 DECLARE 
     선언부(생략가능)
           - PL/SQL 블럭에서 사용 할 변수
@@ -240,26 +257,29 @@ BEGIN
     SELECT deptno, dname INTO v_deptno, v_dname
     FROM dept
     WHERE deptno = 10;
-    DBMS_OUTPUT.PUT_LINE('v_deptno : ' || v_deptno || 'v_dname : ' || v_dname);
+    
+    /*System.out.println("v_deptno : " +  v_deptno + ", v_dname : " + v_dname);*/
+    DBMS_OUTPUT.PUT_LINE('v_deptno : ' || v_deptno || ' v_dname : ' || v_dname);
 END;
 /
  
  
  
 참조타입 : 변수 타입을 테이블의 컬럼 정보를 통해 선언
-          변수명 테이블명 컬럼병 %TYPE;
+          변수명 테이블명.컬럼명%TYPE;
           ==> 특정 테이블 컬럼의 타입을 참조하여 선언.
               해당 컬럼의 타입이 변경이 되더라도 PL/SQL 코드는 수정을 하지 않아도 된다.
               
 
 DECLARE
-    v_deptno dept.deptno%TYPE;
+    v_deptno dept.deptno%TYPE;  /*v_deptno NUMBER(2);*/
     v_dname dept.dname%TYPE;
 BEGIN
     SELECT deptno, dname INTO v_deptno, v_dname
     FROM dept
     WHERE deptno = 10;
-    DBMS_OUTPUT.PUT_LINE('v_deptno : ' || v_deptno || 'v_dname : ' || v_dname);
+    
+    DBMS_OUTPUT.PUT_LINE('v_deptno : ' || v_deptno || ' v_dname : ' || v_dname);
 END;
 /            
           
@@ -274,6 +294,11 @@ BEGIN
 END;
 /
 
+
+실행방법
+EXEC 프로시저명;
+
+
 CREATE OR REPLACE PROCEDURE printdept IS
     v_deptno dept.deptno%TYPE;
     v_dname dept.dname%TYPE;
@@ -287,8 +312,6 @@ END;
 /
 
 
-실행방법
-EXEC 프로시저명;
 
 EXEC printdept;
 
@@ -315,6 +338,7 @@ END;
 /
 
 EXEC printdept(20);
+EXEC printdept(30);
 EXEC printdept(10);
 
 SELECT *
@@ -322,14 +346,21 @@ FROM emp;
 
 실습 pro_1
 
+SELECT ename, dname
+FROM emp, dept
+WHERE emp.deptno = dept.deptno
+  AND emp.empno = 7369;
+
+
 CREATE OR REPLACE PROCEDURE printemp (p_empno IN emp.empno%TYPE) IS
-    v_empno emp.empno%TYPE;
-    v_dname dept.dname%TYPE;
-    v_ename emp.ename%TYPE;
+    v_empno emp.ename%TYPE;
+    v_dname dept.dname%TYPE;   
 BEGIN
-    SELECT empno, dname, ename INTO v_empno, v_dname, v_ename
+    SELECT empno, dname, ename INTO v_ename, v_dname
     FROM emp, dept
-    WHERE empno = p_empno AND emp.deptno = dept.deptno;
+    WHERE emp.deptno = dept.deptno
+      AND emp.empno = p_empno;
+    
     DBMS_OUTPUT.PUT_LINE('v_empno : ' || v_empno || 'v_dname : ' || v_dname || 'v_ename : ' || v_ename);    
 END;
 /
@@ -337,8 +368,45 @@ END;
 EXEC printemp(7369);
 EXEC printemp(7521);
 
+EXEC printemp(7499);
+
+SELECT *
+FROM emp;
+
+SELECT *
+FROM dept_test;
+
+DROP TABLE dept_test;
+
+CREATE TABLE dept_test AS
+SELECT *
+FROM dept;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 실습 por_2
+
+INSERT INTO DEPT_TEST VALUES(99, 'ddit', 'daejeon');
+ROLLBACK;
 
 SELECT *
 FROM dept_test;
@@ -348,7 +416,10 @@ FROM
 
 
 
-CREATE OR REPLACE PROCEDURE registdept_test (p_deptno IN dept_test.deptno%TYPE, p_dname IN dept_test.dname%TYPE, p_loc IN dept_test.loc%TYPE) IS    
+CREATE OR REPLACE PROCEDURE registdept_test 
+    (p_deptno IN dept_test.deptno%TYPE, 
+     p_dname IN dept_test.dname%TYPE, 
+     p_loc IN dept_test.loc%TYPE) IS    
 /*변수선언을 꼭 안해줘도 된다!*/
 BEGIN
     INSERT INTO DEPT_TEST VALUES(p_deptno, p_dname, p_loc);
